@@ -34,7 +34,6 @@ const upload = multer({ storage });
 //   }
 // });
 router.get("/allplants",async (req, res) => {
-    console.log("i am call")
     try{
        
         const query="SELECT *FROM plants ";
