@@ -37,7 +37,7 @@ router.get("/allplants",async (req, res) => {
     console.log("i am call")
     try{
        
-        const query="SELECT *FROM users ";
+        const query="SELECT *FROM plants ";
         const [plants]=await promisePool.execute(query);
         res.status(200).json(plants);
     }catch(err){

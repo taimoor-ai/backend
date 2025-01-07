@@ -14,16 +14,24 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-async function sendOTP(email, otp) {
-    const mailOptions = {
-        from: process.env.EMAIL_USER,
-        to: email,
-        subject: 'Your OTP for Registration',
-        text: `Your OTP for registering on Plants Store is: ${otp}. It expires in 10 minutes.`
-    };
 
-    await transporter.sendMail(mailOptions);
-}
+    async function sendOTP(email, otp) {
+        const mailOptions = {
+            from: process.env.EMAIL_USER,
+            to: email,
+            subject: 'Your OTP for Registration',
+            text: `Your OTP for registering on Plants Store is: ${otp}. It expires in 10 minutes.`
+        };
+        try {
+            console.log("Sending OTP to:", email);
+            await transporter.sendMail(mailOptions);
+            console.log("OTP sent successfully!");
+        } catch (error) {
+            console.error("Error sending OTP:", error);
+        }
+    }
+    
+
 
 
 module.exports={sendOTP,generateOTP};

@@ -45,7 +45,7 @@ router.post("/register", [
         // Generate and send OTP if user does not exist
         const otp = generateOTP();
         otpStore[email] = { otp, expiresAt: Date.now() + 10 * 60000 }; // OTP expires in 10 min
-
+        console.log(otp)
         // Send OTP to email
         await sendOTP(email, otp);
 
@@ -59,7 +59,8 @@ router.post("/register", [
 
 router.post('/verify-otp', async (req, res) => {
     const { email, otp, password, name } = req.body;
-
+    console.log("i am call");
+    
     const storedOtp = otpStore[email];
 
     // Check if OTP exists and hasn't expired
@@ -69,8 +70,8 @@ router.post('/verify-otp', async (req, res) => {
 
     try {
         const hashedPassword = await bcrypt.hash(password, 10);
-        const query = `INSERT INTO users (username, email, password, is_verified) VALUES (?, ?, ?, ?)`;
-        await promisePool.execute(query, [name, email, hashedPassword, true]);
+        const query = `INSERT INTO users (username, email, password) VALUES (?, ?, ?)`;
+        await promisePool.execute(query, [name, email, hashedPassword]);
 
         // Remove OTP after successful registration
         delete otpStore[email];
