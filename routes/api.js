@@ -34,8 +34,9 @@ const upload = multer({ storage });
 //   }
 // });
 router.get("/allplants",async (req, res) => {
+    console.log("i am call")
     try{
-        console.log("i am call")
+       
         const query="SELECT *FROM users ";
         const [plants]=await promisePool.execute(query);
         res.status(200).json(plants);
