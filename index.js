@@ -38,6 +38,9 @@ app.use('/auth',authRoutes);
 app.use('/ord',orderRoute);
 app.use('/crt',cartRoute);
 app.use('/rev',reviews);
+app.get("/",(req,res)=>{
+  res.send("hello")
+})
 dotenv.config();
 
 // Start Server
