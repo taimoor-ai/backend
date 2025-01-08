@@ -46,8 +46,8 @@ router.post("/addPlant",  async (req, res) => {
       return res.status(400).json({ message: "Name, category, and price are required." });
     }
 
-    // Get Image URL from Cloudinary
-    const imageUrl = "image Url"
+    // // Get Image URL from Cloudinary
+    // const imageUrl = "image Url"
 
     // SQL Query
     const query = `
