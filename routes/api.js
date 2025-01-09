@@ -38,22 +38,15 @@ router.post("/addPlant",  async (req, res) => {
       description,
       sunlight_requirements,
       watering_frequency,
-      is_featured
+      is_featured,
+      image_url
     } = req.body;
-    return res.json({name,
-      category,
-      price,
-      stock,
-      description,
-      sunlight_requirements,
-      watering_frequency,
-      is_featured});
     // Validate required fields
     if (!name || !category || !price) {
       return res.status(400).json({ message: "Name, category, and price are required." });
     }
 
-    // // Get Image URL from Cloudinary
+    // Get Image URL from Cloudinary
     // const imageUrl = "image Url"
 
     // SQL Query
@@ -69,7 +62,7 @@ router.post("/addPlant",  async (req, res) => {
       price,
       stock || 0,  // Default stock to 0
       description || '',  // Empty description by default
-      imageUrl,  // Cloudinary URL
+      image_url,  // Cloudinary URL
       sunlight_requirements || null,
       watering_frequency || null,
       is_featured || 0  // Not featured by default
