@@ -62,7 +62,7 @@ router.post("/addPlant",  async (req, res) => {
       price,
       stock || 0,  // Default stock to 0
       description || '',  // Empty description by default
-      image_url,  // Cloudinary URL
+      image_url||"",  // Cloudinary URL
       sunlight_requirements || null,
       watering_frequency || null,
       is_featured || 0  // Not featured by default
