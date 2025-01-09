@@ -125,6 +125,7 @@ router.put("/plant/:id", async (req, res) => {
             sunlight_requirements,
             watering_frequency,
             is_featured,
+            scientificName
         } = req.body;
  // If image_url is not provided, set it to NULL
         const imageUrl = image_url || null;
@@ -140,6 +141,7 @@ router.put("/plant/:id", async (req, res) => {
                 sunlight_requirements = ?, 
                 watering_frequency = ?, 
                 is_featured = ?
+                scientificName = ?
             WHERE id = ?
         `;
         const values=[
@@ -152,6 +154,7 @@ router.put("/plant/:id", async (req, res) => {
             sunlight_requirements || null,
             watering_frequency || null,
             is_featured || 0,
+            scientificName,
             id
         ];
         const [result] = await promisePool.execute(query,values);
