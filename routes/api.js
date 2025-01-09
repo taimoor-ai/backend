@@ -40,7 +40,14 @@ router.post("/addPlant",  async (req, res) => {
       watering_frequency,
       is_featured
     } = req.body;
-
+    return res.send(name,
+      category,
+      price,
+      stock,
+      description,
+      sunlight_requirements,
+      watering_frequency,
+      is_featured);
     // Validate required fields
     if (!name || !category || !price) {
       return res.status(400).json({ message: "Name, category, and price are required." });
@@ -67,7 +74,7 @@ router.post("/addPlant",  async (req, res) => {
       watering_frequency || null,
       is_featured || 0  // Not featured by default
     ];
-    res.send(values);
+    
     const [record] = await promisePool.execute(query, values);
 
     res.status(201).json({
