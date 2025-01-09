@@ -54,7 +54,7 @@ router.post("/addPlant",  async (req, res) => {
     const query = `
       INSERT INTO plants 
       (name, category, price, stock, description, image_url, sunlight_requirements, watering_frequency, is_featured,scientificName)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?)
     `;
 
     const values = [
