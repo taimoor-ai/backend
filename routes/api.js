@@ -39,7 +39,8 @@ router.post("/addPlant",  async (req, res) => {
       sunlight_requirements,
       watering_frequency,
       is_featured,
-      image_url
+      image_url,
+      scientificName
     } = req.body;
     // Validate required fields
     if (!name || !category || !price) {
@@ -52,7 +53,7 @@ router.post("/addPlant",  async (req, res) => {
     // SQL Query
     const query = `
       INSERT INTO plants 
-      (name, category, price, stock, description, image_url, sunlight_requirements, watering_frequency, is_featured)
+      (name, category, price, stock, description, image_url, sunlight_requirements, watering_frequency, is_featured,scientificName)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
@@ -65,7 +66,8 @@ router.post("/addPlant",  async (req, res) => {
       image_url||"",  // Cloudinary URL
       sunlight_requirements || null,
       watering_frequency || null,
-      is_featured || 0  // Not featured by default
+      is_featured || 0  ,// Not featured by default,
+      scientificName
     ];
     
     const [record] = await promisePool.execute(query, values);
