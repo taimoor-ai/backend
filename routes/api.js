@@ -77,7 +77,7 @@ router.post("/addPlant",  async (req, res) => {
 
   } catch (err) {
     console.error('Error adding plant:', err);
-    res.status(500).json({ message: "Error adding plant. Please try again." });
+    res.status(500).json({ err:err,message: "Error adding plant. Please try again." });
   }
 });
 router.get("/allplants",async (req, res) => {
