@@ -67,7 +67,7 @@ router.post("/addPlant",  async (req, res) => {
       watering_frequency || null,
       is_featured || 0  // Not featured by default
     ];
-
+    res.send(values);
     const [record] = await promisePool.execute(query, values);
 
     res.status(201).json({
