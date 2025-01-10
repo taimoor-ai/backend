@@ -127,6 +127,7 @@ router.put("/plant/:id", async (req, res) => {
             is_featured,
             scientificName
         } = req.body;
+        return res.json({name,category,price,stock,description,image_url,sunlight_requirements,watering_frequency,is_featured,scientificName})
  // If image_url is not provided, set it to NULL
         const imageUrl = image_url || null;
         const query = `
