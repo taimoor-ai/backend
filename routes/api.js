@@ -141,7 +141,7 @@ router.put("/plant/:id", async (req, res) => {
                 image_url = ?, 
                 sunlight_requirements = ?, 
                 watering_frequency = ?, 
-                is_featured = ?
+                is_featured = ?,
                 scientificName = ?
             WHERE id = ?
         `;
