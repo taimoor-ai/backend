@@ -159,7 +159,7 @@ router.put("/plant/:id", async (req, res) => {
             scientificName,
             id
         ]
-        // return res.json({values});
+        return res.json({values});
         const [result] = await promisePool.execute(query,values);
         if (result.affectedRows === 0) {
             return res.status(404).send("Plant not found");
