@@ -199,7 +199,7 @@ router.delete('/plants/:id', async (req, res) => {
        
     } catch (err) {
        console.log(err);
-       res.status(500).send("Error deleting plant");
+       res.status(500).send(err,"Error deleting plant");
     }
  });
  
