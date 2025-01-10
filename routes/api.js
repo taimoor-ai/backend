@@ -127,7 +127,7 @@ router.put("/plant/:id", async (req, res) => {
             is_featured,
             scientificName
         } = req.body;
-        return res.json({name,category,price,stock,description,image_url,sunlight_requirements,watering_frequency,is_featured,scientificName})
+        
  // If image_url is not provided, set it to NULL
         const imageUrl = image_url || null;
         const query = `
@@ -145,20 +145,20 @@ router.put("/plant/:id", async (req, res) => {
                 scientificName = ?
             WHERE id = ?
         `;
+
         const values=[
             name,
             category,
             price,
             stock || 0,  // Default stock to 0 if not provided
             description || '',  // Default empty description if not provided
-            imageUrl,
+            imageUrl||"  ",
             sunlight_requirements || null,
             watering_frequency || null,
             is_featured || 0,
             scientificName,
             id
-        ];
-        return response.json({values})
+        ]
         const [result] = await promisePool.execute(query,values);
         if (result.affectedRows === 0) {
             return res.status(404).send("Plant not found");
