@@ -19,7 +19,7 @@ router.get('/allorders', async (req, res) => {
                 o.payment_method,
                 o.order_date AS created_at,
                 o.status,
-                o.customer.
+                o.customer,
                 oi.plant_id,
                 oi.quantity,
                 oi.price
