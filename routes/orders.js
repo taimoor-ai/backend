@@ -71,7 +71,9 @@ router.get('/allorders', async (req, res) => {
         return res.status(500).json({ error: err.message });
     }
 });
-
+router.put('/orders/updateStatus/:id', async (req, res) => {
+    res.send("update status");
+})
 router.post('/orders', async (req, res) => {
     const { user_id, guest_email, phone, total_amount, shipping_address, payment_method, items } = req.body;
 
