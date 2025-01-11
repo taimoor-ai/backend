@@ -72,7 +72,17 @@ router.get('/allorders', async (req, res) => {
     }
 });
 router.put('/orders/updateStatus/:id', async (req, res) => {
-    res.send("update status");
+    try{
+          const query=`UPDATE orders SET status=? WHERE id=?`;
+            const values=[req.body.status,req.params.id];
+            const [result]=await promisePool.execute(query,values);
+            if(result.affectedRows===0){
+                return res.status(404).json({success:false,message:"Order not found or no change made."});
+            }   
+            return res.status(200).json({success:true,message:"Order status updated successfully."});
+    }catch(err){
+        return res.status(500).json({ error: err.message });
+    }
 })
 router.post('/orders', async (req, res) => {
     const { user_id, guest_email, phone, total_amount, shipping_address, payment_method, items } = req.body;
