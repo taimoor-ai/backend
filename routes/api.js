@@ -16,11 +16,11 @@ const upload = multer({
 // Route to add a plant with image upload
 router.post("/addPlant",async (req, res) => {
   // try {
-    // Check if image was uploaded
-    if (!req.files || req.files.length === 0) {
-      return res.status(400).json({ message: 'Image is required.' });
-    }
-    return res.send(req.files);
+    // // Check if image was uploaded
+    // if (!req.files || req.files.length === 0) {
+    //   return res.status(400).json({ message: 'Image is required.' });
+    // }
+    // return res.send(req.files);
     res.send("hello");
 //     const {
 //       name,
