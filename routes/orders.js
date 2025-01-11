@@ -5,16 +5,69 @@ const authenticateToken=require("../middleware/authenticate")
 const dotenv=require("dotenv");
 dotenv.config();
 
-router.get('/Allorders', async (req, res) => {
+router.get('/allorders', async (req, res) => {
+    try {
+        // Query to fetch orders with their associated order items
+        const query = `
+            SELECT 
+                o.id AS order_id,
+                o.user_id,
+                o.guest_email,
+                o.phone,
+                o.total_amount,
+                o.shipping_address,
+                o.payment_method,
+                o.created_at,
+                oi.plant_id,
+                oi.quantity,
+                oi.price
+            FROM orders o
+            LEFT JOIN order_items oi ON o.id = oi.order_id
+            ORDER BY o.id;
+        `;
 
-    try{
-        const query = `SELECT * FROM orders orders`;
-        const [orders] = await promisePool.execute(query);
-         return res.status(200).json({ success: true, orders });
-    }catch(err){
-        res.status(500).json({error:err.message})
+        const [result] = await promisePool.execute(query);
+
+        // Transform the result into a structured response
+        const orders = result.reduce((acc, row) => {
+            // Check if the order already exists in the accumulator
+            let order = acc.find(o => o.order_id === row.order_id);
+
+            if (!order) {
+                // Add a new order if it doesn't exist
+                order = {
+                    order_id: row.order_id,
+                    user_id: row.user_id,
+                    guest_email: row.guest_email,
+                    phone: row.phone,
+                    total_amount: row.total_amount,
+                    shipping_address: row.shipping_address,
+                    payment_method: row.payment_method,
+                    created_at: row.created_at,
+                    items: []
+                };
+                acc.push(order);
+            }
+
+            // Add the order item if present
+            if (row.plant_id) {
+                order.items.push({
+                    plant_id: row.plant_id,
+                    quantity: row.quantity,
+                    price: row.price
+                });
+            }
+
+            return acc;
+        }, []);
+
+        return res.status(200).json({ success: true, orders });
+    } catch (err) {
+        console.error("Error fetching orders:", err.message);
+        return res.status(500).json({ error: err.message });
     }
-})
+});
+
 router.post('/orders', async (req, res) => {
     const { user_id, guest_email, phone, total_amount, shipping_address, payment_method, items } = req.body;
 
