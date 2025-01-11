@@ -15,85 +15,85 @@ const upload = multer({
 
 // Route to add a plant with image upload
 router.post("/addPlant",async (req, res) => {
-  // try {
-    // // Check if image was uploaded
-    // if (!req.files || req.files.length === 0) {
-    //   return res.status(400).json({ message: 'Image is required.' });
-    // }
-    // return res.send(req.files);
-    res.status(200).send("hello");
-//     const {
-//       name,
-//       category,
-//       price,
-//       stock,
-//       description,
-//       sunlight_requirements,
-//       watering_frequency,
-//       is_featured,
-//       scientificName
-//     } = req.body;
+  try {
+    // Check if image was uploaded
+    if (!req.files || req.files.length === 0) {
+      return res.status(400).json({ message: 'Image is required.' });
+    }
+    // // return res.send(req.files);
+    // res.status(200).send("hello");
+    const {
+      name,
+      category,
+      price,
+      stock,
+      description,
+      sunlight_requirements,
+      watering_frequency,
+      is_featured,
+      scientificName
+    } = req.body;
 
-//     // Validate required fields
-//     if (!name || !category || !price) {
-//       return res.status(400).json({ message: "Name, category, and price are required." });
-//     }
+    // Validate required fields
+    if (!name || !category || !price) {
+      return res.status(400).json({ message: "Name, category, and price are required." });
+    }
 
-//     // Upload images to Cloudinary and get URLs
-//     const imageUrls = [];
-//     const uploadPromises = req.files.map(file => {
-//       return new Promise((resolve, reject) => {
-//         cloudinary.uploader.upload_stream(
-//           {
-//             resource_type: 'auto',  // auto detects the file type (image, video, etc.)
-//           },
-//           (error, result) => {
-//             if (error) {
-//               reject(error);  // Reject the promise if upload fails
-//             } else {
-//               imageUrls.push(result.secure_url);  // Push image URL to array
-//               resolve(result.secure_url);  // Resolve promise with the image URL
-//             }
-//           }
-//         ).end(file.buffer);  // Pass the image buffer to Cloudinary for uploading
-//       });
-//     });
+    // Upload images to Cloudinary and get URLs
+    const imageUrls = [];
+    const uploadPromises = req.files.map(file => {
+      return new Promise((resolve, reject) => {
+        cloudinary.uploader.upload_stream(
+          {
+            resource_type: 'auto',  // auto detects the file type (image, video, etc.)
+          },
+          (error, result) => {
+            if (error) {
+              reject(error);  // Reject the promise if upload fails
+            } else {
+              imageUrls.push(result.secure_url);  // Push image URL to array
+              resolve(result.secure_url);  // Resolve promise with the image URL
+            }
+          }
+        ).end(file.buffer);  // Pass the image buffer to Cloudinary for uploading
+      });
+    });
 
-//     // Wait for all images to upload using Promise.all
-//     await Promise.all(uploadPromises);
+    // Wait for all images to upload using Promise.all
+    await Promise.all(uploadPromises);
 
-//     // SQL Query to insert plant details along with image URLs
-//     const query = `
-//       INSERT INTO plants 
-//       (name, category, price, stock, description, image_url, sunlight_requirements, watering_frequency, is_featured, scientificName)
-//       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-//     `;
+    // SQL Query to insert plant details along with image URLs
+    const query = `
+      INSERT INTO plants 
+      (name, category, price, stock, description, image_url, sunlight_requirements, watering_frequency, is_featured, scientificName)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `;
 
-//     const values = [
-//       name,
-//       category,
-//       price,
-//       stock || 0,  // Default stock to 0
-//       description || '',  // Empty description by default
-//       imageUrls.join(','),  // Join image URLs into a comma-separated string
-//       sunlight_requirements || null,
-//       watering_frequency || null,
-//       is_featured || 0,  // Not featured by default
-//       scientificName
-//     ];
+    const values = [
+      name,
+      category,
+      price,
+      stock || 0,  // Default stock to 0
+      description || '',  // Empty description by default
+      imageUrls.join(','),  // Join image URLs into a comma-separated string
+      sunlight_requirements || null,
+      watering_frequency || null,
+      is_featured || 0,  // Not featured by default
+      scientificName
+    ];
 
-//     // Execute SQL query to insert the plant data into the database
-//     const [record] = await promisePool.execute(query, values);
+    // Execute SQL query to insert the plant data into the database
+    const [record] = await promisePool.execute(query, values);
 
-//     res.status(201).json({
-//       message: 'Plant added successfully',
-//       plantId: record.insertId
-//     });
+    res.status(201).json({
+      message: 'Plant added successfully',
+      plantId: record.insertId
+    });
 
-//   } catch (err) {
-//     console.error('Error adding plant:', err);
-//     res.status(500).json({ err: err.message, message: "Error adding plant. Please try again." });
-//   }
+  } catch (err) {
+    console.error('Error adding plant:', err);
+    res.status(500).json({ err: err.message, message: "Error adding plant. Please try again." });
+  }
 });
 
 
