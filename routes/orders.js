@@ -10,16 +10,17 @@ router.get('/allorders', async (req, res) => {
         // Query to fetch orders with their associated order items
         const query = `
             SELECT 
+               
                 o.id AS order_id,
                 o.user_id,
+                o.status,
+                o.customer,
                 o.guest_email,
                 o.phone,
                 o.total_amount,
                 o.shipping_address,
                 o.payment_method,
                 o.order_date AS created_at,
-                o.status,
-                o.customer,
                 oi.plant_id,
                 oi.quantity,
                 oi.price
