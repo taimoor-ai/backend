@@ -39,6 +39,8 @@ router.get('/allorders', async (req, res) => {
                 // Add a new order if it doesn't exist
                 order = {
                     order_id: row.order_id,
+                    customer: row.customer,
+                    status: row.status,
                     user_id: row.user_id,
                     guest_email: row.guest_email,
                     phone: row.phone,
