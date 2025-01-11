@@ -21,7 +21,7 @@ router.post("/addPlant",async (req, res) => {
     //   return res.status(400).json({ message: 'Image is required.' });
     // }
     // return res.send(req.files);
-    res.send("hello");
+    res.status(200).send("hello");
 //     const {
 //       name,
 //       category,
