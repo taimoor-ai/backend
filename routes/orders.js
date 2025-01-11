@@ -29,7 +29,7 @@ router.post('/orders', async (req, res) => {
     }
 
     const connection = await promisePool.getConnection();
-    res.send(connection)
+    return res.send(connection)
     try {
         // Start transaction
         await connection.beginTransaction();
