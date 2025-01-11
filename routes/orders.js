@@ -5,7 +5,16 @@ const authenticateToken=require("../middleware/authenticate")
 const dotenv=require("dotenv");
 dotenv.config();
 
+router.get('/Allorders', async (req, res) => {
 
+    try{
+        const query = `SELECT * FROM orders orders`;
+        const [orders] = await promisePool.execute(query, [userId]);
+         return res.status(200).json({ success: true, orders });
+    }catch(err){
+        res.status(500).json({error:err.message})
+    }
+})
 router.post('/orders', async (req, res) => {
     const { user_id, guest_email, phone, total_amount, shipping_address, payment_method, items } = req.body;
 
