@@ -32,7 +32,7 @@ router.post('/orders', async (req, res) => {
     try {
         // Start transaction
         await connection.beginTransaction();
-
+        res.send(connection)
         // Insert order
         const orderQuery = `
             INSERT INTO orders 
