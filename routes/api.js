@@ -16,13 +16,14 @@ const upload = multer({
 }).array('images', 3);  // Accept up to 3 files (field name is 'images')
 
 // Route to add a plant with image upload
-router.post("/addPlant", upload, async (req, res) => {
+router.post("/addPlant",async (req, res) => {
   // try {
     // Check if image was uploaded
-    if (!req.files || req.files.length === 0) {
-      return res.status(400).json({ message: 'Image is required.' });
-    }
-    return res.send(req.files);
+    // if (!req.files || req.files.length === 0) {
+    //   return res.status(400).json({ message: 'Image is required.' });
+    // }
+    // return res.send(req.files);
+    res.send("hello");
 //     const {
 //       name,
 //       category,
