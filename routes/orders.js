@@ -29,10 +29,11 @@ router.post('/orders', async (req, res) => {
     }
 
     const connection = await promisePool.getConnection();
+    res.send(connection)
     try {
         // Start transaction
         await connection.beginTransaction();
-        res.send(connection)
+       
         // Insert order
         const orderQuery = `
             INSERT INTO orders 
