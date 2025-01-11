@@ -2,33 +2,26 @@ const express = require("express");
 const router = express.Router();
 const promisePool = require("../dbConfig");
 const multer = require('multer');
-const { CloudinaryStorage } = require('multer-storage-cloudinary');
-const cloudinary = require('cloudinary').v2;
-require('dotenv').config();
+const express = require('express');
+const multer = require('multer');
+const cloudinary = require('../cloudinaryConfig'); // Cloudinary configuration file
 
-cloudinary.config({
-  cloud_name: process.env.CLOUD_NAME,
-  api_key: process.env.CLOUD_API_KEY,
-  api_secret: process.env.CLOUD_API_SECRET
-});
-const storage = new CloudinaryStorage({
-  cloudinary: cloudinary,
-  params: {
-    folder: 'plants',  // Cloudinary folder
-    allowed_formats: ['jpg', 'jpeg', 'png'],
-    public_id: (req, file) => Date.now() + '-' + file.originalname
-  }
-});
+require('dotenv').config();  // Load environment variables
 
-const upload = multer({ storage });
+// Configure multer to use in-memory storage
+const storage = multer.memoryStorage();
+const upload = multer({
+  storage,
+  limits: { files: 3 },  // Limit to 3 files
+}).array('images', 3);  // Accept up to 3 files (field name is 'images')
 
-
-router.post("/addPlant",  async (req, res) => {
+// Route to add a plant with image upload
+router.post("/addPlant", upload, async (req, res) => {
   try {
     // Check if image was uploaded
-    // if (!req.file) {
-    //   return res.status(400).json({ message: 'Image is required.' });
-    // }
+    if (!req.files || req.files.length === 0) {
+      return res.status(400).json({ message: 'Image is required.' });
+    }
 
     const {
       name,
@@ -39,22 +32,42 @@ router.post("/addPlant",  async (req, res) => {
       sunlight_requirements,
       watering_frequency,
       is_featured,
-      image_url,
       scientificName
     } = req.body;
+
     // Validate required fields
     if (!name || !category || !price) {
       return res.status(400).json({ message: "Name, category, and price are required." });
     }
 
-    // Get Image URL from Cloudinary
-    // const imageUrl = "image Url"
+    // Upload images to Cloudinary and get URLs
+    const imageUrls = [];
+    const uploadPromises = req.files.map(file => {
+      return new Promise((resolve, reject) => {
+        cloudinary.uploader.upload_stream(
+          {
+            resource_type: 'auto',  // auto detects the file type (image, video, etc.)
+          },
+          (error, result) => {
+            if (error) {
+              reject(error);  // Reject the promise if upload fails
+            } else {
+              imageUrls.push(result.secure_url);  // Push image URL to array
+              resolve(result.secure_url);  // Resolve promise with the image URL
+            }
+          }
+        ).end(file.buffer);  // Pass the image buffer to Cloudinary for uploading
+      });
+    });
 
-    // SQL Query
+    // Wait for all images to upload using Promise.all
+    await Promise.all(uploadPromises);
+
+    // SQL Query to insert plant details along with image URLs
     const query = `
       INSERT INTO plants 
-      (name, category, price, stock, description, image_url, sunlight_requirements, watering_frequency, is_featured,scientificName)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?)
+      (name, category, price, stock, description, image_url, sunlight_requirements, watering_frequency, is_featured, scientificName)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
     const values = [
@@ -63,13 +76,14 @@ router.post("/addPlant",  async (req, res) => {
       price,
       stock || 0,  // Default stock to 0
       description || '',  // Empty description by default
-      image_url||"",  // Cloudinary URL
+      imageUrls.join(','),  // Join image URLs into a comma-separated string
       sunlight_requirements || null,
       watering_frequency || null,
-      is_featured || 0  ,// Not featured by default,
+      is_featured || 0,  // Not featured by default
       scientificName
     ];
-    // return res.send({values});
+
+    // Execute SQL query to insert the plant data into the database
     const [record] = await promisePool.execute(query, values);
 
     res.status(201).json({
@@ -79,9 +93,12 @@ router.post("/addPlant",  async (req, res) => {
 
   } catch (err) {
     console.error('Error adding plant:', err);
-    res.status(500).json({ err:err,message: "Error adding plant. Please try again." });
+    res.status(500).json({ err: err.message, message: "Error adding plant. Please try again." });
   }
 });
+
+
+
 router.get("/allplants",async (req, res) => {
     try{
        
