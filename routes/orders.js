@@ -7,11 +7,11 @@ dotenv.config();
 
 router.get('/allorders', async (req, res) => {
     try {
-        // Query to fetch orders with their associated order items
+        // Query to fetch only pending orders and their associated order items
         const query = `
             SELECT 
                 o.id AS order_id,
-                 o.customer,
+                o.customer,
                 o.user_id,
                 o.status,
                 o.guest_email,
@@ -25,6 +25,7 @@ router.get('/allorders', async (req, res) => {
                 oi.price
             FROM orders o
             LEFT JOIN order_items oi ON o.id = oi.order_id
+            WHERE o.status = 'pending'
             ORDER BY o.id;
         `;
 
@@ -67,23 +68,11 @@ router.get('/allorders', async (req, res) => {
 
         return res.status(200).json({ success: true, orders });
     } catch (err) {
-        console.error("Error fetching orders:", err.message);
+        console.error("Error fetching pending orders:", err.message);
         return res.status(500).json({ error: err.message });
     }
 });
-router.put('/orders/updateStatus/:id', async (req, res) => {
-    try{
-          const query=`UPDATE orders SET status=? WHERE id=?`;
-            const values=[req.body.status,req.params.id];
-            const [result]=await promisePool.execute(query,values);
-            if(result.affectedRows===0){
-                return res.status(404).json({success:false,message:"Order not found or no change made."});
-            }   
-            return res.status(200).json({success:true,message:"Order status updated successfully."});
-    }catch(err){
-        return res.status(500).json({ error: err.message });
-    }
-})
+
 router.post('/orders', async (req, res) => {
     const { user_id, guest_email, phone, total_amount, shipping_address, payment_method, items } = req.body;
 
