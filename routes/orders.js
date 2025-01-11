@@ -27,15 +27,14 @@ router.post('/orders', async (req, res) => {
     if (!items || items.length === 0) {
         return res.status(400).json({ error: "Order must include at least one item." });
     }
-   
-    
-    
+
+    let connection; // Declare connection outside the try block
     try {
-       
-            const connection = await promisePool.getConnection();
+        connection = await promisePool.getConnection(); // Initialize the connection
+
         // Start transaction
         await connection.beginTransaction();
-       
+
         // Insert order
         const orderQuery = `
             INSERT INTO orders 
@@ -45,28 +44,33 @@ router.post('/orders', async (req, res) => {
         const orderValues = [user_id || null, guest_email, phone, total_amount, shipping_address, payment_method];
         const [orderResult] = await connection.execute(orderQuery, orderValues);
         const orderId = orderResult.insertId;
-       
+
         // Insert order items
         const itemQuery = `
             INSERT INTO order_items (order_id, plant_id, quantity, price)
             VALUES ?
         `;
-
         const itemValues = items.map(item => [orderId, item.plant_id, item.quantity, item.price]);
         await connection.query(itemQuery, [itemValues]);
 
         // Commit transaction
         await connection.commit();
 
+        // Respond with success
         res.status(201).json({ success: true, orderId });
     } catch (err) {
-        await connection.rollback();
+        if (connection) {
+            await connection.rollback(); // Rollback the transaction if connection exists
+        }
         console.error(err);
         res.status(500).json({ error: "Failed to create order." });
     } finally {
-        connection.release();
+        if (connection) {
+            connection.release(); // Release the connection if initialized
+        }
     }
 });
+
 
 router.get('/orders/userOrders', authenticateToken, async (req, res) => {
     try {
