@@ -248,13 +248,13 @@ router.get('/orders/:id', async (req, res) => {
     }
 });
 
-router.put('/orders/:id', async (req, res) => {
+router.put('/orders/updateStatus/:id', async (req, res) => {
     try {
         const orderId = req.params.id;
         const { status } = req.body;  // New status from request body
 
         // Validate if status is provided and valid
-        const validStatuses = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
+        const validStatuses = ['pending',"confirmed", 'processing', 'shipped', 'delivered', 'cancelled'];
         if (!status || !validStatuses.includes(status)) {
             return res.status(400).json({
                 success: false,
