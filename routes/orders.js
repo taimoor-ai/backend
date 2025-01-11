@@ -9,7 +9,7 @@ router.get('/Allorders', async (req, res) => {
 
     try{
         const query = `SELECT * FROM orders orders`;
-        const [orders] = await promisePool.execute(query, [userId]);
+        const [orders] = await promisePool.execute(query);
          return res.status(200).json({ success: true, orders });
     }catch(err){
         res.status(500).json({error:err.message})
