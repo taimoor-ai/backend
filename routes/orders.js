@@ -11,9 +11,9 @@ router.get('/allorders', async (req, res) => {
         const query = `
             SELECT 
                 o.id AS order_id,
+                 o.customer,
                 o.user_id,
                 o.status,
-                o.customer,
                 o.guest_email,
                 o.phone,
                 o.total_amount,
