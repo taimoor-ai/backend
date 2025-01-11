@@ -27,6 +27,13 @@ router.post('/orders', async (req, res) => {
     if (!items || items.length === 0) {
         return res.status(400).json({ error: "Order must include at least one item." });
     }
+    try {
+        const connection = await promisePool.getConnection();
+        return res.send("Connection successful");
+    } catch (err) {
+        return res.send("Error connecting to the database:", err.message, err.stack);
+    }
+    
     return res.send("connnection")
     const connection = await promisePool.getConnection();
     return res.send("connnection",connection)
