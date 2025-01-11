@@ -29,7 +29,7 @@ router.post('/orders', async (req, res) => {
     }
     try {
         const connection = await promisePool.getConnection();
-        return res.send("Connection successful");
+        return res.send("Connection successful",connection);
     } catch (err) {
         return res.send("Error connecting to the database:", err.message, err.stack);
     }
