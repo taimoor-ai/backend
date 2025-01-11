@@ -2,8 +2,6 @@ const express = require("express");
 const router = express.Router();
 const promisePool = require("../dbConfig");
 const multer = require('multer');
-const express = require('express');
-const multer = require('multer');
 const cloudinary = require('../cloudinaryConfig'); // Cloudinary configuration file
 
 require('dotenv').config();  // Load environment variables
