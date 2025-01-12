@@ -324,7 +324,7 @@ router.put('/orders/updateStatus/:id', async (req, res) => {
         if (!status || !validStatuses.includes(status)) {
             return res.status(400).json({
                 success: false,
-                message: 'Invalid or missing status. Valid statuses: pending, processing, shipped, delivered, cancelled.'
+                message: 'Invalid or missing status. Valid statuses: pending, processing, shipped, delivered, cancelled,ready,completed'
             });
         }
 
